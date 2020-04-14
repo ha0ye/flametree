@@ -8,12 +8,12 @@ radians <- function(degree) {
 
 # horizontal distance
 extend_x <- function(distance, angle) {
-  distance * cos(radians(angle))
+  distance * cospi(angle/180)
 }
 
 # vertical distance
 extend_y <- function(distance, angle) {
-  distance * sin(radians(angle))
+  distance * sinpi(angle/180)
 }
 
 # a blank theme with a monochromatic background

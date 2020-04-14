@@ -76,9 +76,9 @@ grow_tree <- function(sapling, param) {
 # the data structure that we used to grow the tree is designed to allow
 # efficient computation, but is not optimal for ggplot3 so it needs to
 # be reshaped into a convenient form
-shape_tree <- function(tree) {
+shape_tree <- function(dat, interpolate = TRUE) {
 
-  tree <- tree %>%
+  tree <- dat %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(id_path = as.integer(1:dplyr::n())) %>%
     tidyr::pivot_longer(
@@ -90,8 +90,10 @@ shape_tree <- function(tree) {
     tidyr::pivot_wider(names_from = axis, values_from = coord) %>%
     dplyr::mutate(
       id_step = as.integer(id_step),
-      seg_col = sqrt(x ^ 2 + y ^ 2) + (seg_deg - 90) / 10,
-      seg_wid = exp(-id_time^2 / 10)
+      seg_col = dplyr::case_when(interpolate ~ sqrt(x ^ 2 + y ^ 2) + (seg_deg - 90) / 10,
+                          TRUE ~ (seg_deg - 90) / 10),
+      seg_wid = dplyr::case_when(interpolate ~ exp(-(id_time+id_step/2)^2 / 10),
+                          TRUE ~ exp(-id_time^2 / 10))
     ) %>%
     dplyr::rename(coord_x = x, coord_y = y) %>%
     dplyr::select(

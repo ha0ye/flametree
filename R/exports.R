@@ -30,7 +30,8 @@ flametree_grow <- function(seed = 286,
                            scale = c(.8, .9),
                            angle = c(-10, 10, 20),
                            split = 2,
-                           prune = 0) {
+                           prune = 0,
+                           interpolate = TRUE) {
 
   # parameters defining the tree
   param <- list(
@@ -47,8 +48,10 @@ flametree_grow <- function(seed = 286,
 
   # growing the tree is a 3-step process
   tree <- grow_sapling() %>%  # sapling is the first segment
-    grow_tree(param) %>%      # grow the tree with
-    shape_tree()
+    grow_tree(param) %>%
+    shape_tree(interpolate = interpolate)
+
+  attr(tree, "interpolate") <- interpolate
 
   return(tree)
 }
@@ -86,9 +89,16 @@ flametree_plot <- function(tree,
     color = seg_col   # the seg_col variable is used to set line colour
   )
 
+  if (attr(tree, "interpolate"))
+  {
+    geom <- ggforce::geom_bezier2
+  } else {
+    geom <- ggforce::geom_bezier
+  }
+
   # build the ggplot
   picture <- ggplot2::ggplot(data = tree, mapping = mapping) +
-    ggforce::geom_bezier2(show.legend = FALSE, lineend = "round") +
+    geom(show.legend = FALSE, lineend = "round") +
     paletteer::scale_color_paletteer_c(palette = palette) +
     theme_mono(color = background)
 
