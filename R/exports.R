@@ -78,7 +78,7 @@ flametree_grow <- function(seed = 286,
 #' @export
 flametree_plot <- function(tree,
                            background = "antiquewhite4",
-                           palette = "viridis::inferno") {
+                           palette = "viridis::inferno", n = 100) {
 
   # specify the mapping
   mapping <- ggplot2::aes(
@@ -98,7 +98,7 @@ flametree_plot <- function(tree,
 
   # build the ggplot
   picture <- ggplot2::ggplot(data = tree, mapping = mapping) +
-    geom(show.legend = FALSE, lineend = "round") +
+    geom(show.legend = FALSE, lineend = "round", n = n) +
     paletteer::scale_color_paletteer_c(palette = palette) +
     theme_mono(color = background)
 

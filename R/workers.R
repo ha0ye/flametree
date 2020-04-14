@@ -64,7 +64,7 @@ grow_layer <- function(shoots, time, param) {
 grow_tree <- function(sapling, param) {
 
   tree <- purrr::accumulate(
-    .x = 1:param$time,
+    .x = seq_len(param$time),
     .f = grow_layer,
     .init = sapling,
     param = param
